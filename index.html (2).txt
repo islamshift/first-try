@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة التكنولوجيا الزراعية</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000; /* Dark background color */
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Hide scrollbars */
+            transition: background-color 0.3s ease; /* Smooth animation for background color change */
+        }
+        h1 {
+            color: #f1c40f; /* Yellow color for title */
+            font-size: 36px; /* Larger size for the main title */
+        }
+        .club-name {
+            font-size: 24px; /* Larger size for Epiphany Club */
+            color: #fff;
+            margin-top: 10px;
+        }
+        #game-container {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 600px;
+            background-color: rgba(255, 255, 255, 0.9); /* Light background with transparency */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none; /* Hidden until start button is clicked */
+        }
+        button {
+            background-color: #f1c40f; /* Yellow color for buttons */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth animation for zoom and shadow */
+        }
+        button:hover {
+            background-color: #d35400; /* Orange color for hover effect */
+        }
+        button:focus {
+            outline: none; /* Remove default focus outline */
+        }
+        button.correct-answer {
+            background-color: #27ae60; /* Green for correct answer */
+            box-shadow: 0 0 10px #27ae60; /* Shadow for correct answer */
+        }
+        button.wrong-answer {
+            background-color: #e74c3c; /* Red for wrong answer */
+            box-shadow: 0 0 10px #e74c3c; /* Shadow for wrong answer */
+        }
+        #start-button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 20px;
+        }
+        #score {
+            font-size: 24px;
+            color: #27ae60; /* Green color for score */
+        }
+        #timer {
+            font-size: 20px;
+            color: #e74c3c; /* Red color for timer */
+        }
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #fff;
+        }
+        .logo {
+            width: 120px; /* Slightly larger logo */
+            height: 120px;
+            margin-bottom: 20px;
+        }
+        #result-page {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            color: #fff;
+        }
+        #result-message {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        #play-again-button {
+            padding: 15px 30px;
+            font-size: 20px;
+            background-color: #f1c40f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #play-again-button:hover {
+            background-color: #d35400;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-page">
+        <img src="IMG_20250225_170729_664.png" alt="Epiphany Club Logo" class="logo">
+        <h1>لعبة التكنولوجيا الزراعية</h1>
+        <div class="club-name">Epiphany Club</div>
+        <button id="start-button">ابدأ اللعبة</button>
+
+DJEBBAR Islam Mohammed, [04/04/2025 15:46]
+</div>
+    <div id="game-container">
+        <p>اختر الإجابة الصحيحة قبل انتهاء الوقت!</p>
+        <div id="question"></div>
+        <div id="options"></div>
+        <div id="score">النقاط: 0</div>
+        <div id="timer">الوقت المتبقي: 100 ثانية</div>
+    </div>
+    <div id="result-page">
+        <div id="result-message"></div>
+        <button id="play-again-button">إعادة اللعبة</button>
+    </div>
+    <footer>تم تطوير هذه اللعبة بواسطة <strong>Epiphany Club</strong></footer>
+    <script>
+        const questions = [
+            {
+                question: "ما هي التقنية التي تستخدم الذكاء الاصطناعي لتحليل صور الأقمار الصناعية لمراقبة المحاصيل؟",
+                options: ["GIS", "IoT", "AI", "Blockchain"],
+                answer: "AI"
+            },
+            {
+                question: "ما هو النظام الذي يربط بين أجهزة الاستشعار والمزارع عبر الإنترنت؟",
+                options: ["IoT", "AI", "Big Data", "Blockchain"],
+                answer: "IoT"
+            },
+            {
+                question: "ما هو المصطلح الذي يشير إلى استخدام تقنيات متقدمة لتحسين كفاءة إنتاج الغذاء؟",
+                options: ["الزراعة التقليدية", "الزراعة الذكية", "الزراعة العضوية", "الزراعة المائية"],
+                answer: "الزراعة الذكية"
+            },
+            {
+                question: "ما هو النظام الذي يساعد في تتبع سلسلة الإمداد الغذائي باستخدام التشفير؟",
+                options: ["IoT", "AI", "Big Data", "Blockchain"],
+                answer: "Blockchain"
+            },
+            {
+                question: "ما هي التقنية التي تساعد في تحديد مواقع النباتات المريضة باستخدام الصور الجوية؟",
+                options: ["الطائرات بدون طيار", "التصوير بالأشعة تحت الحمراء", "الذكاء الاصطناعي", "كل ما سبق"],
+                answer: "كل ما سبق"
+            },
+            {
+                question: "ما هو المصطلح الذي يشير إلى استخدام نظم المعلومات الجغرافية في الزراعة؟",
+                options: ["GIS", "IoT", "AI", "Big Data"],
+                answer: "GIS"
+            },
+            {
+                question: "ما هي التقنية التي تستخدم لإنتاج الأسمدة من النفايات العضوية؟",
+                options: ["التحلل اللاهوائي", "التسميد العضوي", "الهضم اللاهوائي", "كل ما سبق"],
+                answer: "كل ما سبق"
+            },
+            {
+                question: "ما هو الجهاز الذي يستخدم لقياس ضوء الشمس في البيوت الزجاجية؟",
+                options: ["مجس الضوء", "مجس الحرارة", "مجس الرطوبة", "مجس الغازات"],
+                answer: "مجس الضوء"
+            },
+            {
+                question: "ما هي التقنية التي تستخدم لتقليل استهلاك المياه في الزراعة؟",
+                options: ["الري بالتنقيط", "الزراعة المائية", "الزراعة العمودية", "كل ما سبق"],
+                answer: "كل ما سبق"
+            },
+            {
+                question: "ما هو المصطلح الذي يشير إلى استخدام البيانات الضخمة لتحليل الإنتاج الزراعي؟",
+                options: ["IoT", "AI", "Big Data", "Blockchain"],
+                answer: "Big Data"
+            },
+            {
+                question: "ما هي التقنية التي تستخدم لتحويل غاز ثاني أكسيد الكربون إلى وقود حيوي؟",
+                options: ["التخمير الحيوي", "التقطير الحيوي", "التثبيت الحيوي", "التكثيف الحيوي"],
+                answer: "التثبيت الحيوي"
+            },
+            {
+                question: "ما هو الجهاز الذي يستخدم لقياس تركيز الأملاح في التربة؟",
+                options: ["مجس EC", "مجس pH", "مجس الرطوبة", "مجس الحرارة"],
+                answer: "مجس EC"
+            },
+            {
+                question: "ما هي التقنية المستخدمة لتحسين مقاومة النباتات للأمراض باستخدام الهندسة الوراثية؟",
+                options: ["CRISPR", "GMO", "RNAi", "كل ما سبق"],
+                answer: "كل ما سبق"
+            },
+            {
+                question: "ما هو المصطلح الذي يشير إلى نظام الزراعة الذي يعتمد على الطاقة الشمسية فقط؟",
+
+DJEBBAR Islam Mohammed, [04/04/2025 15:46]
+options: ["الزراعة الشمسية", "الزراعة الخضراء", "الزراعة المستدامة", "الزراعة الذكية"],
+                answer: "الزراعة الشمسية"
+            },
+            {
+                question: "ما هي التقنية التي تستخدم لتحديد تركيز المعادن الثقيلة في التربة باستخدام الليزر؟",
+                options: ["التحليل الطيفي", "التحليل الكهربائي", "التحليل الكيميائي", "التحليل المغناطيسي"],
+                answer: "التحليل الطيفي"
+            },
+            {
+                question: "ما هو النظام الذي يستخدم الذكاء الاصطناعي لتحسين جدولة الري؟",
+                options: ["AI Irrigation", "Smart Watering", "Precision Farming", "Hydroponics"],
+                answer: "AI Irrigation"
+            },
+            {
+                question: "ما هي التقنية التي تستخدم لتحسين جودة البذور باستخدام تقنيات النانو؟",
+                options: ["Nanoseed", "NanoCoating", "Nanofertilizers", "كل ما سبق"],
+                answer: "كل ما سبق"
+            },
+            {
+                question: "ما هو المصطلح الذي يشير إلى استخدام الروبوتات في جمع المحاصيل؟",
+                options: ["Robotics Harvesting", "Automated Farming", "Precision Agriculture", "Smart Farming"],
+                answer: "Robotics Harvesting"
+            },
+            {
+                question: "ما هي التقنية التي تستخدم لتحليل بيانات المناخ للتنبؤ بالإنتاج الزراعي؟",
+                options: ["Climate Modeling", "Weather Forecasting", "Agricultural Analytics", "كل ما سبق"],
+                answer: "كل ما سبق"
+            },
+            {
+                question: "ما هو النظام الذي يستخدم البيانات الضخمة لتحسين إدارة الموارد الزراعية؟",
+                options: ["Resource Management System", "Farm Management Software", "Precision Agriculture", "كل ما سبق"],
+                answer: "كل ما سبق"
+            }
+        ];
+
+        let score = 0;
+        let timeLeft = 100;
+        let currentQuestionIndex = 0;
+        let timerInterval;
+
+        const questionElement = document.getElementById('question');
+        const optionsElement = document.getElementById('options');
+        const scoreElement = document.getElementById('score');
+        const timerElement = document.getElementById('timer');
+        const gameContainer = document.getElementById('game-container');
+        const mainPage = document.getElementById('main-page');
+        const resultPage = document.getElementById('result-page');
+        const resultMessage = document.getElementById('result-message');
+        const playAgainButton = document.getElementById('play-again-button');
+        const startButton = document.getElementById('start-button');
+
+        function loadQuestion() {
+            if (currentQuestionIndex < questions.length) {
+                const currentQuestion = questions[currentQuestionIndex];
+                questionElement.textContent = currentQuestion.question;
+                optionsElement.innerHTML = '';
+                currentQuestion.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.onclick = () => checkAnswer(button, option, currentQuestion.answer);
+                    optionsElement.appendChild(button);
+                });
+            } else {
+                endGame();
+            }
+        }
+
+        function checkAnswer(button, selectedOption, correctAnswer) {
+            // Disable all buttons to prevent multiple clicks
+            const buttons = optionsElement.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+
+            // Add animation based on correctness
+            if (selectedOption === correctAnswer) {
+                button.classList.add('correct-answer');
+                setTimeout(() => button.classList.remove('correct-answer'), 500); // Remove after 500ms
+
+                // Change background color to green briefly
+                document.body.style.backgroundColor = '#27ae60';
+                setTimeout(() => document.body.style.backgroundColor = '#000', 500); // Reset after 500ms
+
+DJEBBAR Islam Mohammed, [04/04/2025 15:46]
+score++;
+                scoreElement.textContent = النقاط: ${score};
+            } else {
+                button.classList.add('wrong-answer');
+                setTimeout(() => button.classList.remove('wrong-answer'), 500); // Remove after 500ms
+
+                // Change background color to red briefly
+                document.body.style.backgroundColor = '#e74c3c';
+                setTimeout(() => document.body.style.backgroundColor = '#000', 500); // Reset after 500ms
+            }
+
+            currentQuestionIndex++;
+            loadQuestion();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = الوقت المتبقي: ${timeLeft} ثانية;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function endGame() {
+            stopTimer(); // Stop the timer
+            gameContainer.style.display = "none"; // Hide game container
+            resultPage.style.display = "flex"; // Show result page
+            if (score >= 10) {
+                resultMessage.textContent = "تهانينا! لقد فزت باللعبة.";
+                resultMessage.style.color = "#27ae60";
+            } else {
+                resultMessage.textContent = "لقد خسرت! حاول مرة أخرى.";
+                resultMessage.style.color = "#e74c3c";
+            }
+        }
+
+        function restartGame() {
+            resultPage.style.display = "none"; // Hide result page
+            mainPage.style.display = "block"; // Show main page
+            score = 0;
+            timeLeft = 100;
+            currentQuestionIndex = 0;
+            scoreElement.textContent = النقاط: ${score};
+            timerElement.textContent = الوقت المتبقي: ${timeLeft} ثانية;
+        }
+
+        startButton.addEventListener('click', () => {
+            mainPage.style.display = "none"; // Hide main page
+            gameContainer.style.display = "block"; // Show game container
+            loadQuestion();
+            startTimer();
+        });
+
+        playAgainButton.addEventListener('click', restartGame);
+    </script>
+</body>
+</html>
